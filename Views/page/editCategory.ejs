@@ -5,7 +5,7 @@
             <form action="/admin/editCategory/<%= cate._id %>" method="post">
                 <div class="form-group">
                     <label for="nameCategory">Name Category</label>
-                    <input type="text" class="form-control" name="name" id="name" placeholder="<%= cate.name %>">
+                    <input type="text" class="form-control" name="name" id="name" value="<%= cate.name %>">
                 </div>
                 <input class="btn btn-primary" type="submit" value="Submit">
             </form>
