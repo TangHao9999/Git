@@ -1,0 +1,15 @@
+<% include ../layout/header-admin.ejs %>
+
+<section class="bg0 p-t-23 p-b-140">
+        <div class="container">
+            <form action="/admin/editCategory/<%= cate._id %>" method="post">
+                <div class="form-group">
+                    <label for="nameCategory">Name Category</label>
+                    <input type="text" class="form-control" name="name" id="name" placeholder="<%= cate.name %>">
+                </div>
+                <input class="btn btn-primary" type="submit" value="Submit">
+            </form>
+        </div>
+    </section>
+
+<% include ../layout/footer-admin.ejs %>

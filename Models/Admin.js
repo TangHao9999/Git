@@ -11,8 +11,9 @@ db.once('open', function() {
 var Schema = mongoose.Schema;
 mongoose.Promise = global.Promise;
 
-var Cate = new Schema({
+var Admin = new Schema({
     name :  String,
-  }, {collection : 'Cate', versionKey: false});
+    passWord: String
+  },{collection : 'Admin'});
 
-  module.exports = mongoose.model('Cate', Cate);
+  module.exports = mongoose.model('Admin', Admin);

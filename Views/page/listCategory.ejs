@@ -1,0 +1,21 @@
+<% include ../layout/header-admin.ejs %>
+
+    <section class="bg0 p-t-23 p-b-140">
+        <div class="container">
+            <%   cate.forEach(function(ca){ %>
+                <a class="color-link" href="/admin/editCategory/<%= ca._id %>">
+                    <div class="category adminCategory clearfix">
+                        <h3 class="float-left">
+                            <span class="maintext">
+                                <%= ca.name%>
+                            </span>
+                        </h3>
+                        <a class="btn btn-danger float-right" href="/admin/listCategory/<%= ca._id %>">Delete</a>
+                        <button type="button" class="btn btn-success float-right editAdmin">Edit</button>
+                    </div>
+                </a>
+                <% }); %>
+        </div>
+    </section>
+
+    <% include ../layout/footer-admin.ejs %>

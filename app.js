@@ -1,5 +1,6 @@
 var express = require('express');
 var product = require('./Controllers/product.js');
+var admin = require('./Controllers/admin.js');
 
 var app = express();
 
@@ -12,6 +13,7 @@ app.use(express.static('./Public'));
 
 //Controllers
 product(app);
+admin(app);
 
 //Listen to port
 app.listen(3000, function(){

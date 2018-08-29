@@ -3350,3 +3350,33 @@ input.num-product::-webkit-inner-spin-button {
   color: black;
   transition: 1s ease-in-out;
 }
+
+.p-Admin {
+  font-size: 50px;
+  text-align: center; 
+}
+
+.adminCategory {
+  padding: 10px;
+  border: 1px solid;
+  border-radius: 8px;
+  transition: 0.5s ease-in-out;
+}
+
+.adminCategory:hover {
+  border: 1px solid red;
+  transition: 0.5s ease-in-out;
+  cursor: pointer;
+}
+
+.editAdmin {
+  margin-right: 10px;
+}
+
+.modal-Admin-Delete {
+  margin-top: 200px;
+}
+
+.color-link {
+  color: inherit;
+}
