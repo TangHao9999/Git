@@ -1,0 +1,60 @@
+<% include ../layout/header-admin.ejs %>
+
+<section class="bg0 p-t-23 p-b-140">
+    <div class="container">
+        <%   product.forEach(function(pro){ %>
+        <div class="category adminCategory clearfix">
+            <h3 class="float-left">
+                <span class="maintext">
+                    <%= pro.name%>
+                </span>
+            </h3>
+            <a class="btn btn-danger float-right" href="/admin/listCategory/<%= pro._id %>">Delete</a>
+            <a class="btn btn-success float-right editAdmin" href="/admin/editCategory/<%= pro._id %>">Edit</a>
+        </div>
+        <% }); %>
+    </div>
+    <section class="bg0 p-t-23 p-b-140">
+        <div class="container">
+            <h1>Table OF Product</h1>
+            <div class="tbl-header">
+                <table cellpadding="0" cellspacing="0" border="0">
+                <thead>
+                    <tr>
+                    <th>Image</th>
+                    <th>Name</th>
+                    <th>Price</th>
+                    <th>Category</th>
+                    <th>Amount</th>
+                    <th>Description</th>
+                    </tr>
+                </thead>
+                </table>
+            </div>
+            <div class="tbl-content">
+                <% cate.forEach(function(ca){ %>
+                <% product.forEach(function(pro){ if(pro.cateName == ca.name){ %>
+                <table cellpadding="0" cellspacing="0" border="0">
+                <tbody>
+                    <tr>
+                    <td>
+                        <div class="block2-pic hov-img0">
+                                <img src="/assets/images/<%= pro.img.img1 %>" alt="IMG-PRODUCT">
+                        </div>
+                    </td>
+                    <td><%= pro.name %></td>
+                    <td><%= pro.price %></td>
+                    <td><%= pro.cateName %></td>
+                    <td><%= pro.amount %></td>
+                    <td><%= pro.des %></td>
+                    </tr>
+                </tbody>
+                </table>
+                <% }}); %>
+                <% }); %>
+            </div>
+        </div>
+    </section>
+</section>
+
+<% include ../layout/footer-admin.ejs %>

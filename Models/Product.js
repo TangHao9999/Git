@@ -21,8 +21,8 @@ var Product = new Schema({
     // img :  { type : Array , "default" : [] },
     price : String,
     des : String,
-    cateID : String,
+    cateName : String,
     amount: Number
-  },{collection : 'Product'});
+  },{collection : 'Product', versionKey: false});
 
   module.exports = mongoose.model('Product', Product);

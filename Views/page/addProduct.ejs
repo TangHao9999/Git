@@ -1,0 +1,33 @@
+<% include ../layout/header-admin.ejs %>
+
+<section class="bg0 p-t-23 p-b-140">
+    <div class="container">
+        <form action="/admin/addProduct" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="nameProduct">Name Product</label>
+                <input type="text" class="form-control" name="name" id="name" placeholder="Name"><br>
+                <label for="priceProduct">Price Product</label>
+                <input type="text" class="form-control" name="price" id="price" placeholder="Price"><br>
+                <label for="amountProduct">Amount Product</label>
+                <input type="text" class="form-control" name="amount" id="amount" placeholder="Amount"><br>
+                <label for="desProduct">Description Product</label>
+                <textarea class="form-control" rows="5" name="des" id="des"></textarea><br>
+                <label for="nameCategory">Category</label>
+                <select class="form-control" name="cateName" id="exampleFormControlSelect1">
+                    <% cate.forEach(function(ca){ %>
+                    <option>
+                        <%= ca.name %>
+                    </option>
+                    <% }); %>
+                </select><br>
+                <label for="imgProduct">Images</label>
+                <div class="custom-file file--admin-product">
+                    <input type="file" class="custom-file-input" name="img1" id="customFile">Upload Image
+                </div><br>
+            </div>
+            <input class="btn btn-primary" type="submit" value="Submit">
+        </form>
+    </div>
+</section>
+
+<% include ../layout/footer-admin.ejs %>

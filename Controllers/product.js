@@ -16,10 +16,10 @@ module.exports = function(app) {
         }); 
     });
 
-    app.get('/product/:name.:id.:cateID', function(req,res){
+    app.get('/product/:name.:id.:cateName', function(req,res){
         Product.findById(req.params.id).then(function(product){
             Product.find().then(function(pro){
-                Cate.findById(req.params.cateID).then(function(cate){
+                Cate.find(req.params.cateName).then(function(cate){
                     res.render('product-detail',{product: product, cate: cate, pro: pro})
                 });
             })

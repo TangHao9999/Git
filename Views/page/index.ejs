@@ -187,7 +187,7 @@
                 </a>
             </div>
             <div class="row">
-                <% product.forEach(function(pro){ if(id < 4){ if(pro.cateID == ca._id){ id ++ ; %>
+                <% product.forEach(function(pro){ if(id < 4){ if(pro.cateName == ca.name){ id ++ ; %>
                     <div class="col-sm-6 col-md-4 col-lg-3 p-b-35">
                         <!-- Block2 -->
                         <div class="block2">
@@ -201,7 +201,7 @@
 
                             <div class="block2-txt flex-w flex-t p-t-14">
                                 <div class="block2-txt-child1 flex-col-l ">
-                                    <a href="/product/<%= pro.name %>.<%= pro._id%>.<%= pro.cateID %>" class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6">
+                                    <a href="/product/<%= pro.name %>.<%= pro._id%>.<%= pro.cateName %>" class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6">
                                         <%= pro.name %>
                                     </a>
 
