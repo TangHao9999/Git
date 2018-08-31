@@ -116,11 +116,13 @@ module.exports = function (app) {
             });
         });
     });
-    app.post('/admin/addProduct', upload.single('img1'), urlencodedParser, function (req, res) {
-        var originalFileName = req.file.originalname;
+    app.post('/admin/addProduct', upload.any(), urlencodedParser, function (req, res) {
+        var originalFileName1 = req.files[0].originalname;
+        var originalFileName2 = req.files[1].originalname;
+        var originalFileName3 = req.files[2].originalname;
         var product = new Product({
             name: req.body.name,
-            img: {img1: originalFileName},
+            img: {img1: originalFileName1, img2: originalFileName2, img3: originalFileName3},
             price: req.body.price,
             des: req.body.des,
             cateName: req.body.cateName,
