@@ -132,4 +132,49 @@ module.exports = function (app) {
             res.redirect('/admin/listProduct');
         });
     });
+    app.get('/admin/listProduct/:id', function (req, res) {
+        Product.findById(req.params.id, function (product) {
+            var query = {
+                _id: req.params.id
+            };
+            Product.remove(query, function (err) {
+                if (err) {
+                    console.log(err);
+                }
+
+                res.redirect('/admin/listProduct');
+            });
+        });
+    });
+    app.get('/admin/editProduct/:id', function (req, res) {
+        Product.findById(req.params.id).then(function (product) {
+            Cate.find().then(function(cate){
+                res.render('editProduct', {
+                    product: product, cate: cate
+                });
+            });
+        });
+    });
+    app.post('/admin/editProduct/:id', upload.any(), urlencodedParser, function (req, res) {
+        var originalFileName1 = req.files[0].originalname;
+        var originalFileName2 = req.files[1].originalname;
+        var originalFileName3 = req.files[2].originalname;
+        Product.findById(req.params.id).then(function (product) {
+            product.name = req.body.name,
+            // product.img.img1.push({originalFileName1}),
+            // product.img.img2.push({originalFileName2}),
+            // product.img.img3.push({originalFileName3}),
+            product.img.img1 = originalFileName1,
+            product.img.img2 = originalFileName2,
+            product.img.img3 = originalFileName3,
+            product.price = req.body.price,
+            product.des = req.body.des,
+            product.cateName = req.body.cateName,
+            product.amount = req.body.amount
+            product.save().then(function () {
+                res.redirect('/admin/listProduct');
+            });
+            console.log(product.img);
+        });
+    });
 };

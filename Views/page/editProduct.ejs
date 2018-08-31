@@ -1,0 +1,40 @@
+<% include ../layout/header-admin.ejs %>
+
+<section class="bg0 p-t-23 p-b-140">
+    <div class="container">
+        <form action="/admin/editProduct/<%= product._id%>" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="nameProduct">Name Product</label>
+                <input type="text" class="form-control" name="name" id="name" placeholder="Name" value="<%= product.name %>"><br>
+                <label for="priceProduct">Price Product</label>
+                <input type="text" class="form-control" name="price" id="price" placeholder="Price" value="<%= product.price %>"><br>
+                <label for="amountProduct">Amount Product</label>
+                <input type="text" class="form-control" name="amount" id="amount" placeholder="Amount" value="<%= product.amount %>"><br>
+                <label for="desProduct">Description Product</label>
+                <textarea class="form-control" rows="5" name="des" id="des"><%= product.des %></textarea><br>
+                <label for="nameCategory">Category</label>
+                <select class="form-control" name="cateName" id="exampleFormControlSelect1">
+                    <option selected>
+                        <%= product.cateName %>
+                    </option>
+                    <% cate.forEach(function(ca){ %>
+                    <option>
+                        <%= ca.name %>
+                    </option>
+                    <% }); %>
+                </select><br><input type="text" class="form-control" name="test" id="amount" placeholder="Amount"><br>
+                <label class="lb-adminProduct" for="imgProduct">Image 1</label>
+                <input type="file" name="img1" id="customFile"><%= product.img.img1 %><br>
+
+                <label class="lb-adminProduct" for="imgProduct">Image 2</label>
+                <input type="file" name="img2" id="customFile"><%= product.img.img2 %><br>
+
+                <label class="lb-adminProduct" for="imgProduct">Image 3</label>
+                <input type="file" name="img3" id="customFile"><%= product.img.img3 %><br>
+            </div>
+            <input class="btn btn-primary" type="submit" value="Submit">
+        </form>
+    </div>
+</section>
+
+<% include ../layout/footer-admin.ejs %>
