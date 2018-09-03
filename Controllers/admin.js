@@ -3,6 +3,12 @@ var Product = require('../Models/Product.js');
 var Cate = require('../Models/Cate.js');
 var Admin = require('../Models/Admin.js');
 var multer = require('multer');
+var cookieParser = require('cookie-parser');
+var expressValidator = require('express-validator');
+var flash = require('connect-flash');
+var session = require('express-session');
+var passport = require('passport');
+var LocalStrategy = require('passport-local');
 
 var urlencodedParser = bodyParser.urlencoded({
     extended: false
@@ -25,7 +31,7 @@ var upload = multer({
 
 module.exports = function (app) {
     app.get('/admin', function (req, res) {
-        res.render('loginAdmin');
+            res.render('loginAdmin');
     });
     app.post('/admin', urlencodedParser, function (req, res) {
         var name = req.body.name;
@@ -45,6 +51,11 @@ module.exports = function (app) {
             }
         })
     });
+    app.get('/admin/logout', function(req, res){
+        req.logout();
+        req.flash('success_msg', 'You are logged out');
+        res.redirect('/admin')
+    })
 
     // Category ===============================================================================
     app.get('/admin/listCategory', function (req, res) {
@@ -109,7 +120,7 @@ module.exports = function (app) {
     });
     app.get('/admin/addProduct', function (req, res) {
         Cate.find().then(function (cate) {
-            Cate.findById().then(function(data){
+            Cate.findById().then(function (data) {
                 res.render('addProduct', {
                     cate: cate
                 });
@@ -122,7 +133,11 @@ module.exports = function (app) {
         var originalFileName3 = req.files[2].originalname;
         var product = new Product({
             name: req.body.name,
-            img: {img1: originalFileName1, img2: originalFileName2, img3: originalFileName3},
+            img: {
+                img1: originalFileName1,
+                img2: originalFileName2,
+                img3: originalFileName3
+            },
             price: req.body.price,
             des: req.body.des,
             cateName: req.body.cateName,
@@ -148,9 +163,10 @@ module.exports = function (app) {
     });
     app.get('/admin/editProduct/:id', function (req, res) {
         Product.findById(req.params.id).then(function (product) {
-            Cate.find().then(function(cate){
+            Cate.find().then(function (cate) {
                 res.render('editProduct', {
-                    product: product, cate: cate
+                    product: product,
+                    cate: cate
                 });
             });
         });
@@ -160,21 +176,39 @@ module.exports = function (app) {
         var originalFileName2 = req.files[1].originalname;
         var originalFileName3 = req.files[2].originalname;
         Product.findById(req.params.id).then(function (product) {
-            product.name = req.body.name,
-            // product.img.img1.push({originalFileName1}),
-            // product.img.img2.push({originalFileName2}),
-            // product.img.img3.push({originalFileName3}),
-            product.img.img1 = originalFileName1,
-            product.img.img2 = originalFileName2,
-            product.img.img3 = originalFileName3,
-            product.price = req.body.price,
-            product.des = req.body.des,
-            product.cateName = req.body.cateName,
-            product.amount = req.body.amount
-            product.save().then(function () {
-                res.redirect('/admin/listProduct');
+            // product.name = req.body.name,
+            // product.img.img1 = originalFileName1,
+            // product.img.img2 = originalFileName2,
+            // product.img.img3 = originalFileName3,
+            // product.price = req.body.price,
+            // product.des = req.body.des,
+            // product.cateName = req.body.cateName,
+            // product.amount = req.body.amount
+            // product.save().then(function () {
+            //     res.redirect('/admin/listProduct');
+            // });
+            // console.log(product.img);
+            Product.update({_id: product._id}, {
+                name: req.body.name,
+                img: {
+                    img1: originalFileName1,
+                    img2: originalFileName2,
+                    img3: originalFileName3
+                },
+                price: req.body.price,
+                des: req.body.des,
+                cateName: req.body.cateName,
+                amount: req.body.amount
+            }).then(function (){
+                res.redirect('/admin/listProduct',);
             });
-            console.log(product.img);
         });
     });
+
+    function checkAdmin(req, res, next){
+        if(req.isAuthenticated()){
+            next();
+        }
+            res.redirect('/admin');
+    }
 };

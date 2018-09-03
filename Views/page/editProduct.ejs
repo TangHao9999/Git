@@ -22,15 +22,25 @@
                         <%= ca.name %>
                     </option>
                     <% }); %>
-                </select><br><input type="text" class="form-control" name="test" id="amount" placeholder="Amount"><br>
-                <label class="lb-adminProduct" for="imgProduct">Image 1</label>
-                <input type="file" name="img1" id="customFile"><%= product.img.img1 %><br>
+                </select><br>
+                <div class="clearfix">
+                    <div class="float-left">
+                        <label class="lb-adminProduct" for="imgProduct">Image 1</label>
+                        <img src="/assets/images/<%= product.img.img1 %>" class="img-responsive" width="200px">
+                        <input type="file" name="img1" id="customFile">
+                    </div>
+                    <div class="float-left">
+                        <label class="lb-adminProduct" for="imgProduct">Image 2</label>
+                        <img src="/assets/images/<%= product.img.img2 %>" class="img-responsive" width="200px">
+                        <input type="file" name="img2" id="customFile">
+                    </div>
+                    <div class="float-left">
+                        <label class="lb-adminProduct" for="imgProduct">Image 3</label>
+                        <img src="/assets/images/<%= product.img.img3 %>" class="img-responsive" width="200px">
+                        <input type="file" name="img3" id="customFile">
+                    </div>
+                </div> <br>
 
-                <label class="lb-adminProduct" for="imgProduct">Image 2</label>
-                <input type="file" name="img2" id="customFile"><%= product.img.img2 %><br>
-
-                <label class="lb-adminProduct" for="imgProduct">Image 3</label>
-                <input type="file" name="img3" id="customFile"><%= product.img.img3 %><br>
             </div>
             <input class="btn btn-primary" type="submit" value="Submit">
         </form>
