@@ -1,8 +1,10 @@
 var bodyParser = require('body-parser');
+var passport = require('passport');
 var Product = require('../Models/Product.js');
 var Cate = require('../Models/Cate.js');
 
 var urlencodedParser = bodyParser.urlencoded({ extended: false });
+
 
 
 module.exports = function(app) {
@@ -31,6 +33,21 @@ module.exports = function(app) {
             Cate.findOne({name: req.params.cate}).then(function(cate){
                 res.render('product',{product: product, cate: cate})
             });
-        })
-    })
+        });
+    });
+
+    //User
+    app.get('/user/signup', function(req, res){
+        res.render('users/signup');
+    });
+    
+    app.post('/user/signup', passport.authenticate('local', {
+        successRedirect: '/user/profile',
+        failureRedirect: '/user/signup',
+        failureFlash: true
+    }));
+
+    app.get('/user/profile', function(req, res){
+        res.render('users/profile');
+    });
 };

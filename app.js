@@ -1,6 +1,6 @@
 var express = require('express');
-var bodyParser = require('body-parser');
-var cookieParser = require('cookie-parser');
+// var bodyParser = require('body-parser');
+// var cookieParser = require('cookie-parser');
 var expressValidator = require('express-validator');
 var flash = require('connect-flash');
 var passport = require('passport');
@@ -11,14 +11,23 @@ var session = require('express-session');
 var product = require('./Controllers/product.js');
 var admin = require('./Controllers/admin.js');
 
+require('./config/passport');
+
 var app = express();
 
 // Express Session
 app.use(session({
     secret: 'secret',
     resave: false,
-    saveUninitialized: true,
+    saveUninitialized: false,
 }));
+
+// Passport init
+app.use(passport.initialize());
+app.use(passport.session());
+
+// Connect Flash
+app.use(flash());
 
 //set up template engine;
 app.set('view engine', 'ejs');
@@ -27,16 +36,12 @@ app.set('views', './Views/page');
 //static files
 app.use(express.static('./Public'));
 
-app.use(bodyParser.json());
-var urlencodedParser = bodyParser.urlencoded({
-    extended: false
-});
+// app.use(bodyParser.json());
+// var urlencodedParser = bodyParser.urlencoded({
+//     extended: false
+// });
 
-app.use(cookieParser());
-
-// Passport init
-app.use(passport.initialize());
-app.use(passport.session());
+// app.use(cookieParser());
 
 // Express Validator
 app.use(expressValidator({
@@ -55,9 +60,6 @@ app.use(expressValidator({
         };
     }
 }));
-
-// Connect Flash
-app.use(flash());
 
 // Global Vars
 app.use(function (req, res, next) {
