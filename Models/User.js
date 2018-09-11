@@ -13,18 +13,16 @@ var Schema = mongoose.Schema;
 mongoose.Promise = global.Promise;
 
 var User = new Schema({
-  useName: String,
+  userName: String,
   passWord: String
-}, {
-  collection: 'User'
-});
+},{collection : 'User', versionKey: false});
 
-User.methods.encryptPassword = function (passWord) {
-  return bcrypt.hashSync(passWord, bcrypt.genSaltSync(5), null);
-};
+// User.methods.encryptPassword = function (passWord) {
+//   return bcrypt.hashSync(passWord, bcrypt.genSaltSync(5), null);
+// };
 
-User.methods.validPassword = function (passWord) {
-  return bcrypt.compareSync(passWord, this.passWord);
-};
+// User.methods.validPassword = function (passWord) {
+//   return bcrypt.compareSync(passWord, this.passWord);
+// };
 
 module.exports = mongoose.model('User', User);
