@@ -32,14 +32,14 @@ module.exports = function (app) {
     app.get('/product/:name.:id.:cateName', function (req, res) {
         Product.findById(req.params.id).then(function (product) {
             Product.find().then(function (pro) {
-                Cate.find(req.params.cateName).then(function (cate) {
+                Cate.find({name: req.params.cateName}).then(function (cate) {
                     res.render('product-detail', {
                         product: product,
                         cate: cate,
                         pro: pro
                     })
                 });
-            })
+            });
         });
     });
 
@@ -113,13 +113,18 @@ module.exports = function (app) {
         });
     });
 
+    app.get('/user/signout', function (req, res) {
+        req.logout();
+	    res.redirect('/');
+    });
+
     app.get('/user/profile', checkUser, function (req, res) {
-        res.render('users/profile');
+        res.send('Hello');
     });
 
     function checkUser(req, res, next){
         if(req.isAuthenticated()){
-            res.send('Welcome ..');
+            return next();
         } else {
             res.redirect('/user/signin');
         }
