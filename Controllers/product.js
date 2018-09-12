@@ -32,7 +32,7 @@ module.exports = function (app) {
     app.get('/product/:name.:id.:cateName', function (req, res) {
         Product.findById(req.params.id).then(function (product) {
             Product.find().then(function (pro) {
-                Cate.find({name: req.params.cateName}).then(function (cate) {
+                Cate.findOne({name: req.params.cateName}).then(function (cate) {
                     res.render('product-detail', {
                         product: product,
                         cate: cate,
