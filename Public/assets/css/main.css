@@ -3416,6 +3416,11 @@ tr:hover {
   margin-top: 10px;
 }
 
-.tr-no-hover:hover {
-  background-color: transparent;
+.fix-img-shopcart {
+  width: 100px;
+  height: 100px;
+}
+
+.fix-img-marginleft {
+  margin-left: 5%;
 }
