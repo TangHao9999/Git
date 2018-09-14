@@ -6,6 +6,8 @@ var flash = require('connect-flash');
 var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
 var session = require('express-session');
+var mongoose = require('mongoose');
+var MongoStore = require('connect-mongo')(session);
 
 
 var product = require('./Controllers/product.js');
@@ -24,7 +26,18 @@ app.use(session({
     secret: 'secret',
     resave: true,
     saveUninitialized: true,
+    store: new MongoStore({
+        mongooseConnection: mongoose.connection
+    }),
+    cookie: {
+        maxAge: 180*60*1000
+    }
 }));
+
+app.use(function(req, res, next){
+    res.locals.session = req.session;
+    next();
+});
 
 // Passport init
 app.use(passport.initialize());

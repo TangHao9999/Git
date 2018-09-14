@@ -1,9 +1,11 @@
 var bodyParser = require('body-parser');
 var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
+var session = require('express-session');
 var Product = require('../Models/Product.js');
 var Cate = require('../Models/Cate.js');
 var User = require('../Models/User.js');
+var Cart = require('../Models/Cart.js');
 
 var urlencodedParser = bodyParser.urlencoded({
     extended: false
@@ -129,4 +131,26 @@ module.exports = function (app) {
             res.redirect('/user/signin');
         }
     }
+
+    // Shop-Cart
+    app.get('/add-to-cart/:id',function(req, res){
+        var productID = req.params.id;
+        var cart = new Cart(req.session.cart ? req.session.cart : {});
+        Product.findById(productID, function(err, data){
+            if(err){
+                return res.redirect('/');
+            }
+            cart.add(data, data.id);
+            req.session.cart = cart;
+            console.log(req.session.cart);
+            res.redirect('/');
+        })
+    });
+    app.get('/shoping-cart', function(req, res){
+        if(!req.session.cart) {
+            return res.render('cart', {products: null});
+        }
+        var cart = new Cart(req.session.cart);
+        res.render('cart', {products: cart.generateArray(), totalAmount: cart.totalAmount, totalPrice: cart.totalPrice})
+    });
 };

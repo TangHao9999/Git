@@ -3415,3 +3415,7 @@ tr:hover {
 .lb-adminProduct {
   margin-top: 10px;
 }
+
+.tr-no-hover:hover {
+  background-color: transparent;
+}

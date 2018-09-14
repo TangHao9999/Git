@@ -19,7 +19,7 @@ var Product = new Schema({
         img3 : String,
          } },
     // img :  { type : Array , "default" : [] },
-    price : String,
+    price : Number,
     des : String,
     cateName : String,
     amount: Number
