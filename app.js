@@ -9,7 +9,6 @@ var session = require('express-session');
 var mongoose = require('mongoose');
 var MongoStore = require('connect-mongo')(session);
 
-
 var product = require('./Controllers/product.js');
 var admin = require('./Controllers/admin.js');
 

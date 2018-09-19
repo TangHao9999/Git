@@ -1,0 +1,21 @@
+<!-- Header -->
+<% include ../layout/header-v4.ejs %>
+<section class="sec-product-detail bg0 p-t-65 p-b-60">
+    <div class="container">
+        <h1>Checkout</h1>
+        <h4>Your total: $<%= totalPrice %></h4>
+            <form action="/checkout" method="post">
+                <div class="form-group">
+                    
+                </div>
+                <input class="btn btn-success" type="submit" value="Buy Now">
+            </form>
+            <form action="/checkout" method="post">
+                <input type="submit" value="Buy">
+              </form>
+    </div>
+</section>
+<!-- <script type="text/javascript" src="https://js.stripe.com/v2/"></script>
+<script type="text/javascript" src="/assets/js/checkout.js"></script> -->
+<!-- Footer -->
+<% include ../layout/footer.ejs %>

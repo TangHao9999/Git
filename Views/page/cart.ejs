@@ -37,15 +37,26 @@
                         </div>
                     </td>
                     <td data-th="Price">
-                        $<%= pro.item.price %>
+                        $
+                        <%= pro.item.price %>
                     </td>
                     <td data-th="Quantity">
                         <input type="number" class="form-control text-center" value="<%= pro.amount %>">
                     </td>
-                    <td data-th="Subtotal" class="text-center">$<%= pro.price %></td>
+                    <td data-th="Subtotal" class="text-center">$
+                        <%= pro.price %>
+                    </td>
                     <td class="actions" data-th="">
-                        <button class="btn btn-info btn-sm"><i class="fa fa-refresh"></i></button>
-                        <button class="btn btn-danger btn-sm"><i class="fa fa-trash-o"></i></button>
+                        <div class="dropdown">
+                            <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Action
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <a class="dropdown-item" href="/reducebyone/<%= pro.item._id %>">Reduce By One</a>
+                                <a class="dropdown-item" href="/remove/<%= pro.item._id %>">Remove</a>
+                            </div>
+                        </div>
                     </td>
                 </tr>
                 <%  }) %>
@@ -59,7 +70,9 @@
                                 <%= totalPrice %>
                             </h3>
                         </strong></td>
-                    <td><a href="#" class="btn btn-success btn-block">Checkout <i class="fa fa-angle-right"></i></a></td>
+                    <td>
+                        <a href="/checkout" class="btn btn-success btn-block">Checkout <i class="fa fa-angle-right"></i></a>
+                    </td>
                 </tr>
             </tfoot>
         </table>
