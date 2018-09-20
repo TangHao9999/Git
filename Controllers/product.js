@@ -7,7 +7,6 @@ var Cate = require('../Models/Cate.js');
 var User = require('../Models/User.js');
 var Cart = require('../Models/Cart.js');
 
-var paypal = require('paypal-rest-sdk');
 
 
 
@@ -16,24 +15,21 @@ var urlencodedParser = bodyParser.urlencoded({
 });
 
 
-paypal.configure({
-    'mode': 'sandbox', //sandbox or live
-    'client_id': 'AdQZ8K7LkIaHaIEVahV0w0SZ9cODU72fVplzKq2gjBCBD2G0SOcnbJDEKsB5L4T0fbdwHtjx-IRZdU_T',
-    'client_secret': 'EFEpg6pWZZ6cl9VOrjKs1qjG7kUliF6mJSKfEVoy7xkjcHwf3rQvdY38l2j7X5ang83UIfnzWZ_Zfhyh'
-});
-
 module.exports = function (app) {
     app.use(bodyParser.urlencoded({
         extended: true
     }));
     app.get('/', function (req, res) {
+        var successMsg = req.flash('success')[0];
         Product.findById().then(function (data) {
             Product.find().then(function (product) {
                 Cate.find().then(function (cate) {
                     res.render('index', {
                         product: product,
                         cate: cate,
-                        data: data
+                        data: data,
+                        successMsg: successMsg,
+                        noMessage: !successMsg
                     });
                 });
             });
@@ -91,7 +87,7 @@ module.exports = function (app) {
             failureFlash: true
         }),
         function (req, res) {
-            if (req.session.oldUrl){
+            if (req.session.oldUrl) {
                 var oldUrl = req.session.oldUrl;
                 req.session.oldUrl = null;
                 res.redirect(oldUrl);
@@ -176,7 +172,7 @@ module.exports = function (app) {
             totalPrice: cart.totalPrice
         })
     });
-    app.get('/reducebyone/:id', function(req,res){
+    app.get('/reducebyone/:id', function (req, res) {
         var productID = req.params.id;
         var cart = new Cart(req.session.cart ? req.session.cart : {});
 
@@ -184,7 +180,7 @@ module.exports = function (app) {
         req.session.cart = cart;
         res.redirect('/shoping-cart');
     });
-    app.get('/remove/:id', function(req,res){
+    app.get('/remove/:id', function (req, res) {
         var productID = req.params.id;
         var cart = new Cart(req.session.cart ? req.session.cart : {});
 
@@ -195,78 +191,37 @@ module.exports = function (app) {
     app.get('/checkout', checkUser, function (req, res) {
         if (!req.session.cart) {
             return res.redirect('/shoping-cart');
+        } else if (req.session.cart == null) {
+            return res.redirect('/shoping-cart');
         }
         var cart = new Cart(req.session.cart);
+        var errMsg = req.flash('error')[0];
         res.render('checkout', {
-            totalPrice: cart.totalPrice
+            totalPrice: cart.totalPrice, 
+            errMsg: errMsg,
+            noError: !errMsg,
         });
     });
+    app.post('/checkout', checkUser, function (req, res) {
+        if (!req.session.cart) {
+            return res.redirect('/shoping-cart');
+        }
+        var cart = new Cart(req.session.cart);
+        var stripe = require("stripe")("sk_test_JTgxORdqDWfX6Cy9mIHikN7f");
 
-    app.post('/checkout', function (req, res) {
-        const create_payment_json = {
-            "intent": "sale",
-            "payer": {
-                "payment_method": "paypal"
-            },
-            "redirect_urls": {
-                "return_url": "http://localhost:3000/success",
-                "cancel_url": "http://localhost:3000/cancel"
-            },
-            "transactions": [{
-                "item_list": {
-                    "items": [{
-                        "name": "Red hat",
-                        "sku": "001",
-                        "price": "25.00",
-                        "currency": "USD",
-                        "amount": "1"
-                    }]
-                },
-                "amount": {
-                    "currency": "USD",
-                    "total": "25.00"
-                },
-                "description": "This is the payment description."
-            }]
-        };
-        paypal.payment.create(create_payment_json, function (error, payment) {
-            if (error) {
-                console.log(error);
-                throw error;
-            } else {
-                for (let i = 0; i < payment.links.length; i++) {
-                    if (payment.links[i].rel === 'approval_url') {
-                        res.redirect(payment.links[i].href);
-                    }
-                }
-
+        stripe.charges.create({
+            amount: cart.totalPrice * 100,
+            currency: "usd",
+            source: req.body.stripeToken, // obtained with Stripe.js
+            description: "Test Charge"
+        }, function (err, charge) {
+            if(err){
+                req.flash('error', err.message);
+                return res.redirect('/checkout');
             }
+            req.flash('success', 'Successfully bought Product !');
+            req.session.cart = null;
+            res.redirect('/');
         });
     });
-
-    // app.get('/success', (req, res) => {
-    //     const payerId = req.query.PayerID;
-    //     const paymentId = req.query.paymentId;
-
-    //     const execute_payment_json = {
-    //         "payer_id": payerId,
-    //         "transactions": [{
-    //             "amount": {
-    //                 "currency": "USD",
-    //                 "total": "25.00"
-    //             }
-    //         }]
-    //     };
-
-    //     paypal.payment.execute(paymentId, execute_payment_json, function (error, payment) {
-    //         if (error) {
-    //             console.log(error.response);
-    //             throw error;
-    //         } else {
-    //             console.log(JSON.stringify(payment));
-    //             res.send('Success');
-    //         }
-    //     });
-    // });
-    // app.get('/cancel', (req, res) => res.send('Cancelled'));
 };
