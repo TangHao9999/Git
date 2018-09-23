@@ -1,0 +1,59 @@
+<!-- Header -->
+<% include ../layout/header-v4.ejs %>
+
+<section class="sec-product-detail bg0 p-t-65 p-b-60">
+    <div class="container">
+        <h2>My Profile</h2>
+        <p>All of Order:</p>
+        <% var countOrder = 0; orders.forEach(function(or){ %>
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>
+                            <h4>
+                                <%= countOrder++ %>
+                            </h4>
+                        </th>
+                        <th>Product</th>
+                        <th>Name</th>
+                        <th>Price</th>
+                        <th>Amount</th>
+                        <th>Subtotal</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% var id = 0; or.items.forEach(function(itemOrder){ %>
+                    <tr>
+                        <td>
+                            <%= id++ %>
+                        </td>
+                        <td></td>
+                        <td>
+                            <%= itemOrder.item.name %>
+                        </td>
+                        <td>$
+                            <%= itemOrder.item.price %>
+                        </td>
+                        <td>
+                            <%= itemOrder.amount %>
+                        </td>
+                        <td>
+                            $
+                            <%= itemOrder.price %>
+                        </td>
+                    </tr>
+                    <% }); %>
+                </tbody>
+            </table>
+            <h2 class="float-right">
+                $
+                <%= or.cart.totalPrice %>
+            </h2>
+        </div>
+        <% }); %>
+    </div>
+</section>
+
+<!-- Footer -->
+<% include ../layout/footer.ejs %>

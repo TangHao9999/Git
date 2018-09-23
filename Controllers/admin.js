@@ -6,9 +6,9 @@ var multer = require('multer');
 var cookieParser = require('cookie-parser');
 var expressValidator = require('express-validator');
 var flash = require('connect-flash');
-var session = require('express-session');
 var passport = require('passport');
 var LocalStrategy = require('passport-local');
+var session = require('express-session');
 
 var urlencodedParser = bodyParser.urlencoded({
     extended: false
@@ -30,35 +30,64 @@ var upload = multer({
 
 
 module.exports = function (app) {
-    app.get('/admin', function (req, res) {
-            res.render('loginAdmin');
+    app.use(bodyParser.urlencoded({
+        extended: true
+    }));
+    app.get('/homeAdmin', function (req, res) {
+        res.render('dashboardAdmin');
     });
-    app.post('/admin', urlencodedParser, function (req, res) {
-        var name = req.body.name;
-        var passWord = req.body.passWord;
+
+    app.get('/admin', function (req, res) {
+        res.render('loginAdmin');
+    });
+
+    app.post('/admin', passport.authenticate('local', {
+            failureRedirect: '/admin',
+            successRedirect: '/homeAdmin',
+            failureFlash: true
+        }),
+        function (req, res) {
+            res.redirect('/homeAdmin');
+        });
+    passport.use(new LocalStrategy(function (username, password, done) {
         Admin.findOne({
-            name: name,
-            passWord: passWord
-        }, function (err, data) {
+            name: username,
+            passWord: password
+        }, function (err, user) {
             if (err) {
                 throw err;
             }
-            if (!data) {
-                res.redirect('/admin');
+            if (!user) {
+                return done(null, false);
             } else {
-                //res.redirect('/dashboardAdmin');
-                res.render('dashboardAdmin');
+                return done(null, user);
             }
         })
+    }));
+    passport.serializeUser(function (user, done) {
+        done(null, user.id);
     });
-    app.get('/admin/logout', function(req, res){
+
+    passport.deserializeUser(function (id, done) {
+        Admin.findById(id, function (err, user) {
+            if (err) {
+                throw err;
+            }
+            if (!user) {
+                return done(null, false);
+            } else {
+                return done(null, user)
+            }
+        });
+    });
+
+    app.get('/admin/logout', function (req, res) {
         req.logout();
-        req.flash('success_msg', 'You are logged out');
-        res.redirect('/admin')
-    })
+        res.redirect('/admin');
+    });
 
     // Category ===============================================================================
-    app.get('/admin/listCategory', function (req, res) {
+    app.get('/admin/listCategory', checkAdmin, function (req, res) {
         Cate.find().then(function (cate) {
             res.render('listCategory', {
                 cate: cate
@@ -188,7 +217,9 @@ module.exports = function (app) {
             //     res.redirect('/admin/listProduct');
             // });
             // console.log(product.img);
-            Product.update({_id: product._id}, {
+            Product.update({
+                _id: product._id
+            }, {
                 name: req.body.name,
                 img: {
                     img1: originalFileName1,
@@ -199,16 +230,16 @@ module.exports = function (app) {
                 des: req.body.des,
                 cateName: req.body.cateName,
                 amount: req.body.amount
-            }).then(function (){
-                res.redirect('/admin/listProduct',);
+            }).then(function () {
+                res.redirect('/admin/listProduct', );
             });
         });
     });
 
-    function checkAdmin(req, res, next){
-        if(req.isAuthenticated()){
-            next();
+    function checkAdmin(req, res, next) {
+        if (req.isAuthenticated()) {
+            return next();
         }
-            res.redirect('/admin');
+        res.redirect('/admin');
     }
 };

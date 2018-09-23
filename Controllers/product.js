@@ -6,9 +6,7 @@ var Product = require('../Models/Product.js');
 var Cate = require('../Models/Cate.js');
 var User = require('../Models/User.js');
 var Cart = require('../Models/Cart.js');
-
-
-
+var Order = require('../Models/Order.js');
 
 var urlencodedParser = bodyParser.urlencoded({
     extended: false
@@ -133,7 +131,17 @@ module.exports = function (app) {
     });
 
     app.get('/user/profile', checkUser, function (req, res) {
-        res.send('Hello');
+        Order.find({user: req.user}, function(err, orders){
+            if(err){
+                return res.write('Errorr!');
+            }
+            var cart;
+            orders.forEach(function(order){
+                cart = new Cart(order.cart);
+                order.items = cart.generateArray();
+            });
+            res.render('profile', {orders: orders});
+        });
     });
 
     function checkUser(req, res, next) {
@@ -219,9 +227,18 @@ module.exports = function (app) {
                 req.flash('error', err.message);
                 return res.redirect('/checkout');
             }
-            req.flash('success', 'Successfully bought Product !');
-            req.session.cart = null;
-            res.redirect('/');
+            var order = new Order({
+                user: req.user,
+                cart: cart,
+                address: req.body.address,
+                name: req.body.name,
+                paymentID: charge.id
+            });
+            order.save().then(function(err, rs){
+                req.flash('success', 'Successfully bought Product !');
+                req.session.cart = null;
+                res.redirect('/');
+            })
         });
     });
 };
