@@ -7,7 +7,7 @@ var cookieParser = require('cookie-parser');
 var expressValidator = require('express-validator');
 var flash = require('connect-flash');
 var passport = require('passport');
-var LocalStrategy = require('passport-local');
+var LocalStrategy = require('passport-local').Strategy;
 var session = require('express-session');
 
 var urlencodedParser = bodyParser.urlencoded({
@@ -36,56 +36,39 @@ module.exports = function (app) {
     app.get('/homeAdmin', function (req, res) {
         res.render('dashboardAdmin');
     });
-
     app.get('/admin', function (req, res) {
         res.render('loginAdmin');
     });
-
-    app.post('/admin', passport.authenticate('local', {
-            failureRedirect: '/admin',
-            successRedirect: '/homeAdmin',
-            failureFlash: true
-        }),
-        function (req, res) {
-            res.redirect('/homeAdmin');
-        });
-    passport.use(new LocalStrategy(function (username, password, done) {
+    app.post('/admin', urlencodedParser, function (req, res) {
+        var name = req.body.name;
+        var passWord = req.body.passWord;
         Admin.findOne({
-            name: username,
-            passWord: password
-        }, function (err, user) {
+            name: name,
+            passWord: passWord
+        }, function (err, data) {
             if (err) {
                 throw err;
             }
-            if (!user) {
-                return done(null, false);
+            if (!data) {
+                res.redirect('/admin');
             } else {
-                return done(null, user);
+                req.session.user = data;
+                res.redirect('/homeAdmin');
             }
         })
-    }));
-    passport.serializeUser(function (user, done) {
-        done(null, user.id);
     });
-
-    passport.deserializeUser(function (id, done) {
-        Admin.findById(id, function (err, user) {
-            if (err) {
-                throw err;
-            }
-            if (!user) {
-                return done(null, false);
-            } else {
-                return done(null, user)
-            }
-        });
-    });
-
     app.get('/admin/logout', function (req, res) {
-        req.logout();
-        res.redirect('/admin');
-    });
+        req.session.destroy();
+        // req.flash('success_msg', 'You are logged out');
+        res.redirect('/admin')
+    })
 
+    function checkAdmin(req, res, next) {
+        if (req.session.user) {
+            return next();
+        }
+        res.redirect('/admin');
+    }
     // Category ===============================================================================
     app.get('/admin/listCategory', checkAdmin, function (req, res) {
         Cate.find().then(function (cate) {
@@ -94,7 +77,7 @@ module.exports = function (app) {
             });
         })
     });
-    app.get('/admin/addCategory', function (req, res) {
+    app.get('/admin/addCategory', checkAdmin, function (req, res) {
         res.render('addCategory');
     });
     app.post('/admin/addCategory', urlencodedParser, function (req, res) {
@@ -106,7 +89,7 @@ module.exports = function (app) {
             res.redirect('/admin/listCategory');
         });
     });
-    app.get('/admin/listCategory/:id', function (req, res) {
+    app.get('/admin/listCategory/:id', checkAdmin, function (req, res) {
         Cate.findById(req.params.id, function (cate) {
             var query = {
                 _id: req.params.id
@@ -120,7 +103,7 @@ module.exports = function (app) {
             });
         });
     });
-    app.get('/admin/editCategory/:id', function (req, res) {
+    app.get('/admin/editCategory/:id', checkAdmin, function (req, res) {
         Cate.findById(req.params.id).then(function (cate) {
             res.render('editCategory', {
                 cate: cate
@@ -137,7 +120,7 @@ module.exports = function (app) {
     });
 
     // Product =========================================================================
-    app.get('/admin/listProduct', function (req, res) {
+    app.get('/admin/listProduct', checkAdmin, function (req, res) {
         Product.find().then(function (product) {
             Cate.find().then(function (cate) {
                 res.render('listProduct', {
@@ -147,7 +130,7 @@ module.exports = function (app) {
             })
         })
     });
-    app.get('/admin/addProduct', function (req, res) {
+    app.get('/admin/addProduct', checkAdmin, function (req, res) {
         Cate.find().then(function (cate) {
             Cate.findById().then(function (data) {
                 res.render('addProduct', {
@@ -176,7 +159,7 @@ module.exports = function (app) {
             res.redirect('/admin/listProduct');
         });
     });
-    app.get('/admin/listProduct/:id', function (req, res) {
+    app.get('/admin/listProduct/:id', checkAdmin, function (req, res) {
         Product.findById(req.params.id, function (product) {
             var query = {
                 _id: req.params.id
@@ -190,7 +173,7 @@ module.exports = function (app) {
             });
         });
     });
-    app.get('/admin/editProduct/:id', function (req, res) {
+    app.get('/admin/editProduct/:id', checkAdmin, function (req, res) {
         Product.findById(req.params.id).then(function (product) {
             Cate.find().then(function (cate) {
                 res.render('editProduct', {
@@ -205,18 +188,6 @@ module.exports = function (app) {
         var originalFileName2 = req.files[1].originalname;
         var originalFileName3 = req.files[2].originalname;
         Product.findById(req.params.id).then(function (product) {
-            // product.name = req.body.name,
-            // product.img.img1 = originalFileName1,
-            // product.img.img2 = originalFileName2,
-            // product.img.img3 = originalFileName3,
-            // product.price = req.body.price,
-            // product.des = req.body.des,
-            // product.cateName = req.body.cateName,
-            // product.amount = req.body.amount
-            // product.save().then(function () {
-            //     res.redirect('/admin/listProduct');
-            // });
-            // console.log(product.img);
             Product.update({
                 _id: product._id
             }, {
@@ -236,10 +207,4 @@ module.exports = function (app) {
         });
     });
 
-    function checkAdmin(req, res, next) {
-        if (req.isAuthenticated()) {
-            return next();
-        }
-        res.redirect('/admin');
-    }
 };
