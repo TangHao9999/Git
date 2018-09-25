@@ -2,6 +2,10 @@ var bodyParser = require('body-parser');
 var Product = require('../Models/Product.js');
 var Cate = require('../Models/Cate.js');
 var Admin = require('../Models/Admin.js');
+var Order = require('../Models/Order.js');
+var User = require('../Models/User.js');
+var Cart = require('../Models/Cart.js');
+
 var multer = require('multer');
 var cookieParser = require('cookie-parser');
 var expressValidator = require('express-validator');
@@ -207,4 +211,34 @@ module.exports = function (app) {
         });
     });
 
+    //Cart
+    app.get('/admin/cart', checkAdmin, function (req, res) {
+        Order.find({}, function (err, orders) {
+            if (err) {
+                throw err;
+            }
+            orders.forEach(function (order) {
+                User.find({_id: order.user}).then(function (user) {
+                    res.setHeader('content-type', 'text/html');
+                    res.render('cartAdmin', {
+                        user: user,
+                        orders: orders
+                    });
+                })
+            })
+        })
+    });
+    app.get('/admin/cart/:id', checkAdmin, function(req, res){
+        Order.find({user: req.params.id}, function(err, orders){
+            if(err){
+                return res.write('Errorr!');
+            }
+            var cart;
+            orders.forEach(function(order){
+                cart = new Cart(order.cart);
+                order.items = cart.generateArray();
+            });
+            res.render('cartUserAdmin', {orders: orders});
+        });
+    })
 };

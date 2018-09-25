@@ -1,0 +1,19 @@
+<% include ../layout/header-admin.ejs %>
+
+<section class="bg0 p-t-23 p-b-140">
+    <div class="container">
+        <% user.forEach(function(us){ %>
+        <a href="/admin/cart/<%= us._id %>">
+            <div class="category adminCategory clearfix">
+                <h3 class="float-left">
+                    <span class="maintext">
+                        <%= us.userName %>
+                    </span>
+                </h3>
+            </div>
+        </a>
+        <% }) %>
+    </div>
+</section>
+
+<% include ../layout/footer-admin.ejs %>
