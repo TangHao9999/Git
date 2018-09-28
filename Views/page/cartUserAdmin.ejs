@@ -2,16 +2,17 @@
 
 <section class="bg0 p-t-23 p-b-140">
     <div class="container">
-        <h2>My Profile</h2>
+        <h2>Customer Name:
+            <%= order.name %>
+        </h2>
         <p>All of Order:</p>
-        <% var countOrder = 0; orders.forEach(function(or){ %>
         <div class="table-responsive">
             <table class="table">
                 <thead>
                     <tr>
                         <th>
                             <h4>
-                                <%= countOrder++ %>
+
                             </h4>
                         </th>
                         <th>Product</th>
@@ -22,12 +23,16 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <% var id = 0; or.items.forEach(function(itemOrder){ %>
+                    <% var id = 0; order.items.forEach(function(itemOrder){ %>
                     <tr>
                         <td>
                             <%= id++ %>
                         </td>
-                        <td></td>
+                        <td>
+                            <div class="block2-pic hov-img0">
+                                <img src="/assets/images/<%= itemOrder.item.img.img1 %>" alt="IMG-PRODUCT">
+                            </div>
+                        </td>
                         <td>
                             <%= itemOrder.item.name %>
                         </td>
@@ -42,15 +47,15 @@
                             <%= itemOrder.price %>
                         </td>
                     </tr>
-                    <% }); %>
+                    <% }) %>
                 </tbody>
             </table>
             <h2 class="float-right">
                 $
-                <%= or.cart.totalPrice %>
+                <%= order.cart.totalPrice %>
             </h2>
         </div>
-        <% }); %>
+
     </div>
 </section>
 

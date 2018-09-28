@@ -214,32 +214,44 @@ module.exports = function (app) {
 
     //Cart
     app.get('/admin/cart', checkAdmin, function (req, res) {
+        // Order.find({}, function (err, orders) {
+        //     if (err) {
+        //         throw err;
+        //     }
+        //     orders.forEach(function (order) {
+        //         User.find({_id: order.user}).then(function (user) {
+        //             res.setHeader('content-type', 'text/html');
+        //             res.render('cartAdmin', {
+        //                 user: user,
+        //                 orders: orders,
+        //                 order: order
+        //             });
+        //         })
+        //     })
+        // })
+
         Order.find({}, function (err, orders) {
             if (err) {
                 throw err;
             }
-            orders.forEach(function (order) {
-                User.find({_id: order.user}).then(function (user) {
-                    res.setHeader('content-type', 'text/html');
-                    res.render('cartAdmin', {
-                        user: user,
-                        orders: orders
-                    });
-                })
-            })
+            res.setHeader('content-type', 'text/html');
+            res.render('cartAdmin', {
+                orders: orders
+            });
         })
     });
-    app.get('/admin/cart/:id', checkAdmin, function(req, res){
-        Order.find({user: req.params.id}, function(err, orders){
-            if(err){
+    app.get('/admin/cart/:id', checkAdmin, function (req, res) {
+        Order.findById({
+            _id: req.params.id
+        }, function (err, order) {
+            if (err) {
                 return res.write('Errorr!');
             }
-            var cart;
-            orders.forEach(function(order){
-                cart = new Cart(order.cart);
-                order.items = cart.generateArray();
+            var cart = new Cart(order.cart);
+            order.items = cart.generateArray();
+            res.render('cartUserAdmin', {
+                order: order
             });
-            res.render('cartUserAdmin', {orders: orders});
         });
-    })
+    });
 };
