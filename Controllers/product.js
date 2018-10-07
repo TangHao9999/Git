@@ -73,7 +73,7 @@ module.exports = function (app) {
             passWord: req.body.password
         });
         newUser.save().then(function () {
-            res.redirect(req.session.oldUrl);
+            res.redirect('/user/signin');
         });
     });
 
