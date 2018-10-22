@@ -1,0 +1,5 @@
+--Cài đặt phần mềm Visual Code
+--Mở thư mục "Đồ Án" bằng phần mềm
+--Bấm Ctrl + ` để mở Terminal
+--Gõ lệnh nodemon app để chạy chương trình
+--Vào trình duyệt Web gõ đường dẫn: localhost:3000/
